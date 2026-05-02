@@ -1,0 +1,359 @@
+local Players = game:GetService('Players')
+local TweenService = game:GetService('TweenService')
+local UserInputService = game:GetService('UserInputService')
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild('PlayerGui')
+
+print('========================================')
+print('🚀 Rich Hub Cargado')
+print('👑 Desarrollado por: richoffperkz')
+print('========================================')
+
+setclipboard('TT:@richoffperkz02')
+
+-- Destruir versión anterior
+if playerGui:FindFirstChild('Rich_Hub') then
+    playerGui.Rich_Hub:Destroy()
+end
+
+-- ==================== LOADING SCREEN - 35 SEGUNDOS ====================
+local loadingGui = Instance.new('ScreenGui')
+loadingGui.Name = 'HeavenLoading'
+loadingGui.ResetOnSpawn = false
+loadingGui.Parent = playerGui
+
+local loadingFrame = Instance.new('Frame')
+loadingFrame.Size = UDim2.new(0, 320, 0, 180)
+loadingFrame.Position = UDim2.new(0.5, -160, 0.5, -90)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+loadingFrame.BackgroundTransparency = 0.35
+loadingFrame.Parent = loadingGui
+
+Instance.new('UICorner', loadingFrame).CornerRadius = UDim.new(0, 24)
+
+local title = Instance.new('TextLabel')
+title.Size = UDim2.new(1, 0, 0, 50)
+title.BackgroundTransparency = 1
+title.Text = '💸 RICH HUB'
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 22
+title.Font = Enum.Font.GothamBold
+title.Parent = loadingFrame
+
+local progressBarBG = Instance.new('Frame')
+progressBarBG.Size = UDim2.new(0.85, 0, 0, 8)
+progressBarBG.Position = UDim2.new(0.5, -136, 0.65, 0)
+progressBarBG.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+progressBarBG.BackgroundTransparency = 0.5
+progressBarBG.Parent = loadingFrame
+Instance.new('UICorner', progressBarBG).CornerRadius = UDim.new(1, 0)
+
+local progressBar = Instance.new('Frame')
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+progressBar.Parent = progressBarBG
+Instance.new('UICorner', progressBar).CornerRadius = UDim.new(1, 0)
+
+local status = Instance.new('TextLabel')
+status.Size = UDim2.new(1, 0, 0, 30)
+status.Position = UDim2.new(0, 0, 0.78, 0)
+status.BackgroundTransparency = 1
+status.Text = 'Inicializando interfaz...'
+status.TextColor3 = Color3.fromRGB(180, 180, 190)
+status.TextSize = 14
+status.Font = Enum.Font.Gotham
+status.Parent = loadingFrame
+
+task.spawn(function()
+    local totalTime = 35
+    local steps = 100
+    local delayPerStep = totalTime / steps
+
+    for i = 1, steps do
+        progressBar.Size = UDim2.new(i/100, 0, 1, 0)
+        status.Text = 'Cargando interfaz... ' .. i .. '%'
+        task.wait(delayPerStep)
+    end
+
+    status.Text = '¡Listo!'
+    task.wait(0.8)
+    loadingGui:Destroy()
+
+    -- ==================== MAIN UI ====================
+    local mainGui = Instance.new('ScreenGui')
+    mainGui.Name = 'Rich_Hub'
+    mainGui.ResetOnSpawn = false
+    mainGui.DisplayOrder = 999999
+    mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    mainGui.Parent = playerGui
+
+    local notifications = {}
+
+    local function createNotification(text)
+        local noti = Instance.new('Frame')
+        noti.Size = UDim2.new(0, 260, 0, 52)
+        noti.Position = UDim2.new(1, -280, 1, -80 - (#notifications * 62))
+        noti.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+        noti.BackgroundTransparency = 0.25
+        noti.Parent = mainGui
+
+        Instance.new('UICorner', noti).CornerRadius = UDim.new(0, 16)
+        local stroke = Instance.new('UIStroke', noti)
+        stroke.Color = Color3.fromRGB(255, 60, 60)
+        stroke.Thickness = 1.6
+
+        local label = Instance.new('TextLabel', noti)
+        label.Size = UDim2.new(1, -24, 1, 0)
+        label.Position = UDim2.new(0, 12, 0, 0)
+        label.BackgroundTransparency = 1
+        label.Text = text
+        label.TextColor3 = Color3.fromRGB(255, 230, 230)
+        label.TextSize = 14.5
+        label.Font = Enum.Font.GothamSemibold
+        label.TextXAlignment = Enum.TextXAlignment.Left
+
+        noti.Position = UDim2.new(1, 50, noti.Position.Y.Scale, noti.Position.Y.Offset)
+        TweenService:Create(noti, TweenInfo.new(0.45, Enum.EasingStyle.Quint), {Position = UDim2.new(1, -280, noti.Position.Y.Scale, noti.Position.Y.Offset)}):Play()
+
+        table.insert(notifications, noti)
+
+        task.delay(5, function()
+            if noti and noti.Parent then
+                TweenService:Create(noti, TweenInfo.new(0.4), {Position = UDim2.new(1, 50, noti.Position.Y.Scale, noti.Position.Y.Offset)}):Play()
+                task.wait(0.4)
+                noti:Destroy()
+                table.remove(notifications, table.find(notifications, noti) or 0)
+            end
+        end)
+    end
+
+    -- Main Frame
+    local mainFrame = Instance.new('Frame')
+    mainFrame.Size = UDim2.new(0, 300, 0, 200)
+    mainFrame.Position = UDim2.new(0.5, -150, 0.5, -105)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(12, 8, 8)
+    mainFrame.BackgroundTransparency = 0.32
+    mainFrame.Parent = mainGui
+
+    Instance.new('UICorner', mainFrame).CornerRadius = UDim.new(0, 22)
+
+    local mainStroke = Instance.new('UIStroke', mainFrame)
+    mainStroke.Color = Color3.fromRGB(255, 70, 70)
+    mainStroke.Thickness = 2.4
+    mainStroke.Transparency = 0.25
+
+    -- Header
+    local header = Instance.new('Frame')
+    header.Size = UDim2.new(1, 0, 0, 52)
+    header.BackgroundColor3 = Color3.fromRGB(25, 15, 15)
+    header.BackgroundTransparency = 0.45
+    header.Parent = mainFrame
+    Instance.new('UICorner', header).CornerRadius = UDim.new(0, 22)
+
+    local titleLabel = Instance.new('TextLabel')
+    titleLabel.Size = UDim2.new(1, -80, 1, 0)
+    titleLabel.Position = UDim2.new(0, 20, 0, 0)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = '💸 RICH HUB 💸'
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextSize = 20
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = header
+
+    local minimizeBtn = Instance.new('TextButton')
+    minimizeBtn.Size = UDim2.new(0, 34, 0, 34)
+    minimizeBtn.Position = UDim2.new(1, -45, 0.5, -17)
+    minimizeBtn.BackgroundTransparency = 1
+    minimizeBtn.Text = '−'
+    minimizeBtn.TextColor3 = Color3.fromRGB(200, 180, 180)
+    minimizeBtn.TextSize = 28
+    minimizeBtn.Font = Enum.Font.GothamBold
+    minimizeBtn.Parent = header
+
+    -- Freeze Trade
+    local freezeFrame = Instance.new('Frame')
+    freezeFrame.Size = UDim2.new(1, -28, 0, 50)
+    freezeFrame.Position = UDim2.new(0, 14, 0, 65)
+    freezeFrame.BackgroundColor3 = Color3.fromRGB(25, 15, 15)
+    freezeFrame.BackgroundTransparency = 0.42
+    freezeFrame.Parent = mainFrame
+    Instance.new('UICorner', freezeFrame).CornerRadius = UDim.new(0, 16)
+
+    local freezeLabel = Instance.new('TextLabel')
+    freezeLabel.Size = UDim2.new(0.65, 0, 1, 0)
+    freezeLabel.Position = UDim2.new(0, 18, 0, 0)
+    freezeLabel.BackgroundTransparency = 1
+    freezeLabel.Text = '❄️ Freeze Trade   ✨'
+    freezeLabel.TextColor3 = Color3.fromRGB(255, 230, 230)
+    freezeLabel.TextSize = 16
+    freezeLabel.Font = Enum.Font.GothamSemibold
+    freezeLabel.TextXAlignment = Enum.TextXAlignment.Left
+    freezeLabel.Parent = freezeFrame
+
+    local freezeToggle = Instance.new('TextButton')
+    freezeToggle.Size = UDim2.new(0, 58, 0, 32)
+    freezeToggle.Position = UDim2.new(1, -76, 0.5, -16)
+    freezeToggle.BackgroundColor3 = Color3.fromRGB(50, 40, 40)
+    freezeToggle.BackgroundTransparency = 0.25
+    freezeToggle.Text = ''
+    freezeToggle.Parent = freezeFrame
+    Instance.new('UICorner', freezeToggle).CornerRadius = UDim.new(1, 0)
+
+    local toggleCircle = Instance.new('Frame')
+    toggleCircle.Size = UDim2.new(0, 28, 0, 28)
+    toggleCircle.Position = UDim2.new(0, 2, 0.5, -14)
+    toggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    toggleCircle.Parent = freezeToggle
+    Instance.new('UICorner', toggleCircle).CornerRadius = UDim.new(1, 0)
+
+    -- Force Accept
+    local forceFrame = Instance.new('Frame')
+    forceFrame.Size = UDim2.new(1, -28, 0, 50)
+    forceFrame.Position = UDim2.new(0, 14, 0, 125)
+    forceFrame.BackgroundColor3 = Color3.fromRGB(25, 15, 15)
+    forceFrame.BackgroundTransparency = 0.42
+    forceFrame.Parent = mainFrame
+    Instance.new('UICorner', forceFrame).CornerRadius = UDim.new(0, 16)
+
+    local forceLabel = Instance.new('TextLabel')
+    forceLabel.Size = UDim2.new(0.65, 0, 1, 0)
+    forceLabel.Position = UDim2.new(0, 18, 0, 0)
+    forceLabel.BackgroundTransparency = 1
+    forceLabel.Text = '🤖 Force Accept   ✨'
+    forceLabel.TextColor3 = Color3.fromRGB(255, 230, 230)
+    forceLabel.TextSize = 16
+    forceLabel.Font = Enum.Font.GothamSemibold
+    forceLabel.TextXAlignment = Enum.TextXAlignment.Left
+    forceLabel.Parent = forceFrame
+
+    local forceToggle = Instance.new('TextButton')
+    forceToggle.Size = UDim2.new(0, 58, 0, 32)
+    forceToggle.Position = UDim2.new(1, -76, 0.5, -16)
+    forceToggle.BackgroundColor3 = Color3.fromRGB(50, 40, 40)
+    forceToggle.BackgroundTransparency = 0.25
+    forceToggle.Text = ''
+    forceToggle.Parent = forceFrame
+    Instance.new('UICorner', forceToggle).CornerRadius = UDim.new(1, 0)
+
+    local forceCircle = Instance.new('Frame')
+    forceCircle.Size = UDim2.new(0, 28, 0, 28)
+    forceCircle.Position = UDim2.new(0, 2, 0.5, -14)
+    forceCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    forceCircle.Parent = forceToggle
+    Instance.new('UICorner', forceCircle).CornerRadius = UDim.new(1, 0)
+
+    -- Footer
+    local footer = Instance.new('TextLabel')
+    footer.Size = UDim2.new(1, 0, 0, 22)
+    footer.Position = UDim2.new(0, 0, 1, -24)
+    footer.BackgroundTransparency = 1
+    footer.Text = 'Rich Hub • richoffperkz'
+    footer.TextColor3 = Color3.fromRGB(255, 80, 80)
+    footer.TextSize = 12.5
+    footer.Font = Enum.Font.Gotham
+    footer.Parent = mainFrame
+
+    -- ==================== DRAGGABLE + BUBBLE ====================
+    local dragging = false
+    local dragStart, startPos
+
+    header.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = mainFrame.Position
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - dragStart
+            mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+
+    -- Bubble
+    local bubble = Instance.new('TextButton')
+    bubble.Size = UDim2.new(0, 72, 0, 72)
+    bubble.Position = UDim2.new(0.08, 0, 0.75, 0)
+    bubble.BackgroundColor3 = Color3.fromRGB(18, 18, 30)
+    bubble.BackgroundTransparency = 0.25
+    bubble.Text = '💸'
+    bubble.TextSize = 34
+    bubble.Font = Enum.Font.GothamBold
+    bubble.TextColor3 = Color3.fromRGB(255, 90, 90)
+    bubble.Visible = false
+    bubble.Parent = mainGui
+
+    Instance.new('UICorner', bubble).CornerRadius = UDim.new(1, 0)
+    Instance.new('UIStroke', bubble).Thickness = 2.8
+
+    local bubbleDragging = false
+    local bubbleDragStart, bubbleStartPos
+
+    bubble.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            bubbleDragging = true
+            bubbleDragStart = input.Position
+            bubbleStartPos = bubble.Position
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if bubbleDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - bubbleDragStart
+            bubble.Position = UDim2.new(bubbleStartPos.X.Scale, bubbleStartPos.X.Offset + delta.X, bubbleStartPos.Y.Scale, bubbleStartPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            bubbleDragging = false
+        end
+    end)
+
+    minimizeBtn.MouseButton1Click:Connect(function()
+        mainFrame.Visible = false
+        bubble.Visible = true
+    end)
+
+    bubble.MouseButton1Click:Connect(function()
+        mainFrame.Visible = true
+        bubble.Visible = false
+    end)
+
+    -- Toggle Animation
+    local function animateToggle(btn, circle, enabled, moduleName)
+        if enabled then
+            TweenService:Create(btn, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(255, 80, 80)}):Play()
+            TweenService:Create(circle, TweenInfo.new(0.25), {Position = UDim2.new(1, -30, 0.5, -14)}):Play()
+            createNotification("💸 " .. moduleName .. " activado")
+        else
+            TweenService:Create(btn, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(50, 40, 40)}):Play()
+            TweenService:Create(circle, TweenInfo.new(0.25), {Position = UDim2.new(0, 2, 0.5, -14)}):Play()
+            createNotification("💸 " .. moduleName .. " desactivado")
+        end
+    end
+
+    local freezeEnabled = false
+    freezeToggle.MouseButton1Click:Connect(function()
+        freezeEnabled = not freezeEnabled
+        animateToggle(freezeToggle, toggleCircle, freezeEnabled, "Freeze Trade")
+    end)
+
+    local forceEnabled = false
+    forceToggle.MouseButton1Click:Connect(function()
+        forceEnabled = not forceEnabled
+        animateToggle(forceToggle, forceCircle, forceEnabled, "Force Accept")
+    end)
+
+    print('✅ Rich Hub cargado correctamente')
+end)
